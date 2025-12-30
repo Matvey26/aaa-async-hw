@@ -1,3 +1,12 @@
+def log(num, log_list):
+    def decorator(func):
+        async def wrapper(i: int):
+            log_list.append(num)
+            return await func(i)
+        return wrapper
+    return decorator
+
+
 async def task_1(i: int):
     if i == 0:
         return
@@ -27,6 +36,9 @@ async def coroutines_execution_order(i: int = 42) -> int:
     # Пример:
     # i = 7
     # return 12212
+    global task_1, task_2
+    result = []
+    task_1 = log('1', result)(task_1)
+    task_2 = log('2', result)(task_2)
     await task_1(i)
-
-    # YOUR CODE GOES HERE
+    return int(''.join(result))
